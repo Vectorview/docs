@@ -1,0 +1,71 @@
+---
+title: 'JS/TS Quickstart'
+description: 'Connect to vectorview with 3 lines of code'
+---
+
+## Install
+
+```bash
+npm install vectorview
+```
+
+## Use
+Get your `key` by logging in to the [vectorview dashboard](https://www.vectorview.ai/)
+
+```javascript
+import Vectorview from "vectorview";
+const vv = new Vectorview(key)
+vv.event(query, docsWithScore)
+```
+
+## Example
+
+```javascript
+import { FaissStore } from "langchain/vectorstores/faiss";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { TokenTextSplitter } from "langchain/text_splitter";
+import Vectorview from "vectorview";
+
+// Setup
+const vv = new Vectorview(key);
+
+//  Do semantic search
+const text = await fs.readFile('./text.txt', 'utf8'); 
+const splitter = new TokenTextSplitter({ 
+  chunkSize: 40, 
+  chunkOverlap: 0,
+});
+const docs = await splitter.createDocuments([text]);
+const vectorStore = await FaissStore.fromDocuments(docs, new OpenAIEmbeddings()); 
+
+const query = "What did the president say about Ketanji Brown Jackson";
+const docsWithScore = await vectorStore.similaritySearchWithScore(query, 3);
+
+// Log vv event
+vv.event(query, docsWithScore)
+
+```
+
+## Advanced Use
+
+### Query metadata
+Assign custom metadata to an `event()` by passing a `dict` as the third argument.
+```javascript
+vv.event(query, docsWithScore, {"foo": "bar"})
+
+```
+
+### Document metadata
+Documents in `vectorview` are [langchain Documents](https://js.langchain.com/docs/api/document/classes/Document) which has a `metadata` field. Any metadata added will show up in your `vectorview` dashboard.
+```javascript
+docsWithScore[0][0].metadata = {"foo": "bar"}
+vv.event(query, docsWithScore)
+```
+
+### Custom document id
+Vectorview assigns an id to each document used in an `event()`. To assign a custom id, add an `id` field in the [Document's](https://js.langchain.com/docs/api/document/classes/Document) metadata.
+```javascript
+docsWithScore[0][0].metadata = {"id": new_id}
+vv.event(query, docsWithScore)
+```
+

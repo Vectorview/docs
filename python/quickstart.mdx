@@ -1,0 +1,71 @@
+---
+title: 'Python Quickstart'
+description: 'Connect to vectorview with 3 lines of code'
+---
+
+## Install
+
+```bash
+pip install vectorview
+```
+
+## Use
+Get your `key` by logging in to the [vectorview dashboard](https://www.vectorview.ai/)
+
+```python
+from vectorview import Vectorview
+vv = Vectorview(key)
+vv.event(query, docs_with_score)
+```
+
+## Example
+
+```python
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import TokenTextSplitter
+from langchain.vectorstores import FAISS
+from vectorview import Vectorview
+
+# Setup
+vv = Vectorview(key)
+
+# Do semantic search
+with open("./text.txt", "r") as f:
+    text = f.read()
+text_splitter = TokenTextSplitter(chunk_size=40, chunk_overlap=0)
+texts = text_splitter.split_text(text)
+
+embeddings = OpenAIEmbeddings()
+db = FAISS.from_texts(texts, embeddings)
+
+query = "What did the president say about Ketanji Brown Jackson"
+docs_with_score = db.similarity_search_with_score(query, 3)
+
+# Log vv event
+vv.event(query, docs_with_score)
+
+```
+
+## Advanced Use
+
+### Query metadata
+Assign custom metadata to an `event()` by passing a `dict` as the third argument.
+```python
+vv.event(query, docs_with_score, {"foo": "bar"})
+
+```
+
+### Document metadata
+Documents in `vectorview` are [langchain Documents](https://docs.langchain.com/docs/components/schema/document) which has a `metadata` field. Any metadata added will show up in your `vectorview` dashboard.
+```python
+docs_with_score[0][0].metadata = {"foo": "bar"}
+vv.event(query, docs_with_score)
+```
+
+### Custom document id
+Vectorview assigns an id to each document used in an `event()`. To assign a custom id, add an `id` field in the [Document's](https://docs.langchain.com/docs/components/schema/document) metadata.
+```python
+docs_with_score[0][0].metadata = {"id": new_id}
+vv.event(query, docs_with_score)
+```
+
