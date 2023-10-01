@@ -17,15 +17,11 @@
       "to": "#9563FF"
     }
   },
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://vectorview.ai/"
-  },
   "anchors": [
     {
       "name": "Community",
       "icon": "discord",
-      "url": "https://mintlify.com/community"
+      "url": "https://discord.gg/gBtY65sH"
     },
     {
       "name": "Home",
