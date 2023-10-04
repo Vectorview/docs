@@ -31,8 +31,8 @@
   ],
   "navigation": [
     {
-      "group": "Examples",
-      "pages": ["examples"]
+      "group": "Introduction",
+      "pages": ["introduction/dashboard"]
     },
     {
       "group": "Python",
