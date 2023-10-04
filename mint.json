@@ -31,6 +31,10 @@
   ],
   "navigation": [
     {
+      "group": "Examples",
+      "pages": ["examples"]
+    },
+    {
       "group": "Python",
       "pages": ["python/quickstart"]
     },
